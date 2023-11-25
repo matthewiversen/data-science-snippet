@@ -1,1 +1,1 @@
-# data-science-snippet
+# My functions that I commonly use during the data analysis process
