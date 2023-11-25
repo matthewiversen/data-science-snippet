@@ -48,9 +48,15 @@ def show_spelling_errors(
 
 
 def detect_outliers_iqr(data: pd.DataFrame) -> pd.DataFrame:
+    """Detects and returns any outliers for a given dataframe.
+
+    Args:
+        data (pd.DataFrame): Pandas DataFrame
+
+    Returns:
+        pd.DataFrame: Pandas DataFrame with outliers only
     """
-    Detects and returns any outliers for a given dataframe.
-    """
+
     Q1 = data.quantile(0.25)
     Q3 = data.quantile(0.75)
     IQR = Q3 - Q1
@@ -59,13 +65,20 @@ def detect_outliers_iqr(data: pd.DataFrame) -> pd.DataFrame:
 
     # filter for outliers
     outliers = data[(data < lower_bound) | (data > upper_bound)]
+
     return outliers
 
 
 def clean_text(text: str) -> str:
+    """Removes any extra spaces or special characters from text.
+
+    Args:
+        text (str): Text that you want to filer
+
+    Returns:
+        str: The cleaned text
     """
-    Removes any extra spaces or special characters from text.
-    """
+
     # remove anything other than letter, number, and spaces then make lowercase
     text = re.sub(r"[^a-zA-Z0-9\s]", "", text).lower()
 
@@ -76,17 +89,24 @@ def clean_text(text: str) -> str:
 
 
 def factorize_df(df: pd.DataFrame) -> None:
+    """Encodes all object features in the DataFrame.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
     """
-    Encodes all object features in the DataFrame.
-    """
+
     for colname in df.select_dtypes("object"):
         df[colname], _ = df[colname].factorize()
 
 
 def summarize_file(df: pd.DataFrame, file_path: str) -> None:
+    """Prints a summary of a data file including total rows, columns, and file size in MB.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        file_path (str): File path
     """
-    Prints a summary of a data file including total rows, columns, and file size in MB.
-    """
+
     # filesize in mb
     file_size_bytes = os.path.getsize(file_path)
     file_size_mb = file_size_bytes / (1024 * 1024)
@@ -101,35 +121,52 @@ def summarize_file(df: pd.DataFrame, file_path: str) -> None:
 
 
 def show_nan_all_columns(df: pd.DataFrame) -> None:
+    """Prints the number of NaNs for each column of the DataFrame.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
     """
-    Prints the number of NaNs for each column of the DataFrame.
-    """
+
     nan_counts = df.isnull().sum().sort_values(ascending=False)
     print(f"NaN Counts:\n{nan_counts}")
 
 
 def show_nan_columns(df: pd.DataFrame) -> None:
+    """Prints the number of NaNs in columns that have NaNs.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
     """
-    Prints the number of NaNs in columns that have NaNs.
-    """
+
     nan_counts = df.isnull().sum().sort_values(ascending=False)
     nan_counts = nan_counts[nan_counts > 0]
     print(f"NaN Counts:\n{nan_counts}")
 
 
 def find_nan_columns(df: pd.DataFrame) -> pd.Index:
+    """Returns the columns that have NaN values.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+
+    Returns:
+        pd.Index: Pandas Index of NaN columns
     """
-    Returns the columns that have NaN values.
-    """
+
     nan_features = df.isnull().sum()
     non_zero_nans = nan_features[nan_features > 0]
+
     return non_zero_nans.index
 
 
 def check_for_normality(df: pd.DataFrame, features: list[str]) -> None:
+    """Checks for normality in given features, useful in deciding how to impute.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        features (list[str]): Features in DataFrame to check
     """
-    Checks for normality in given features, useful in deciding how to impute.
-    """
+
     for feature in features:
         p_value = shapiro(df[feature]).pvalue
 
@@ -140,25 +177,39 @@ def check_for_normality(df: pd.DataFrame, features: list[str]) -> None:
 
 
 def impute_with_mean(df: pd.DataFrame, features_to_impute: list[str]) -> None:
+    """Imputes given features with the mean value.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        features_to_impute (list[str]): Features to impute with the mean of that feature
     """
-    Imputes given features with the mean value.
-    """
+
     imputer = SimpleImputer(strategy="mean")
     df[features_to_impute] = imputer.fit_transform(df[features_to_impute])
 
 
 def impute_with_median(df: pd.DataFrame, features_to_impute: list[str]) -> None:
+    """Imputes given features with the median value.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        features_to_impute (list[str]): Features to impute with the median of that feature
     """
-    Imputes given features with the median value.
-    """
+
     imputer = SimpleImputer(strategy="median")
     df[features_to_impute] = imputer.fit_transform(df[features_to_impute])
 
 
-def read_config_file(filepath: str):
+def read_config_file(filepath: str) -> dict:
+    """Reads a YAML file for data ingestion.
+
+    Args:
+        filepath (str): YAML file path
+
+    Returns:
+        dict: YAML data
     """
-    Reads a YAML file for data ingestion.
-    """
+
     with open(filepath, "r") as stream:
         try:
             return yaml.safe_load(stream)
@@ -167,9 +218,16 @@ def read_config_file(filepath: str):
 
 
 def num_col_validation(df: pd.DataFrame, table_config: dict) -> bool:
+    """Validates if the number of columns in the DataFrame matches the table configuration.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        table_config (dict): Validation data
+
+    Returns:
+        bool: If number of columns match the validation data
     """
-    Validates if the number of columns in the DataFrame matches the table configuration.
-    """
+
     if len(df.columns) == len(table_config["columns"]):
         return True
     else:
@@ -177,9 +235,16 @@ def num_col_validation(df: pd.DataFrame, table_config: dict) -> bool:
 
 
 def col_header_val(df: pd.DataFrame, table_config: dict) -> bool:
+    """Validates if the header names in the DataFrame match the table configuration.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame
+        table_config (dict): Validation data
+
+    Returns:
+        bool: If column headers match the validation data
     """
-    Validates if the header names in the DataFrame match the table configuration.
-    """
+
     # sort, strip leading and trailing spaces, and replace space with _
     df_columns = sorted([col.strip().lower().replace(" ", "_") for col in df.columns])
     yaml_columns = sorted(
@@ -196,14 +261,20 @@ def col_header_val(df: pd.DataFrame, table_config: dict) -> bool:
 
 
 def set_pd_max_columns(max_columns: int | None) -> None:
+    """Changes the number of columns seen on pandas DataFrame output.
+
+    Args:
+        max_columns (int | None): maximum number columns to set
     """
-    Changes the number of columns seen on pandas DataFrame output.
-    """
+
     pd.set_option("display.max_columns", max_columns)
 
 
 def set_pd_max_rows(max_rows: int | None) -> None:
+    """Changes the number of rows seen on pandas DataFrame output.
+
+    Args:
+        max_rows (int | None): maximum number of rows to set
     """
-    Changes the number of rows seen on pandas DataFrame output.
-    """
+
     pd.set_option("display.max_rows", max_rows)
