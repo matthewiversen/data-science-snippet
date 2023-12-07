@@ -114,6 +114,39 @@ def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def remove_high_cardinality_cols(df: pd.DataFrame, threshold: int) -> pd.DataFrame:
+    """Remove columns with a cardinality higher than the given threshold.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame to update
+        threshold (int): Threshold of cardinality
+    """
+
+    # Identify columns that exceed the threshold
+    high_cardinality_cols = df.nunique()[df.nunique() > threshold].index
+
+    # Print the dropped columns
+    print(len(high_cardinality_cols), "features/columns dropped due to high cardinality:", high_cardinality_cols.values)
+
+    # Drop these columns from the dataframe
+    return df.drop(high_cardinality_cols, axis=1)
+
+
+def remove_high_nan_cols(df: pd.DataFrame, threshold: int) -> pd.DataFrame:
+    """Remove columns with a NaN count higher than the given threshold.
+
+    Args:
+        df (pd.DataFrame): Pandas DataFrame to update
+        threshold (int): Threshold of NaN count
+    """
+
+    high_nan_cols = pd.isnull(df).sum()[pd.isnull(df).sum() > threshold].index
+
+    print(len(high_nan_cols), "features/columns dropped:", high_nan_cols.values)
+    
+    return df.drop(high_nan_cols, axis=1)
+
+
 def factorize_df(df: pd.DataFrame) -> None:
     """Encodes all object features in the DataFrame.
 
