@@ -179,7 +179,7 @@ def summarize_file(df: pd.DataFrame, file_path: str) -> None:
     print(f"File size: {file_size_mb:.2f} MB")
 
 
-def show_nan_all_columns(df: pd.DataFrame) -> None:
+def print_all_nan_counts(df: pd.DataFrame) -> None:
     """Prints the number of NaNs for each column of the DataFrame.
 
     Args:
@@ -190,7 +190,7 @@ def show_nan_all_columns(df: pd.DataFrame) -> None:
     print(f"NaN Counts:\n{nan_counts}")
 
 
-def show_nan_columns(df: pd.DataFrame) -> None:
+def print_nan_cols(df: pd.DataFrame) -> None:
     """Prints the number of NaNs in columns that have NaNs.
 
     Args:
