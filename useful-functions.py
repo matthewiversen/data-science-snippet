@@ -126,7 +126,11 @@ def remove_high_cardinality_cols(df: pd.DataFrame, threshold: int) -> pd.DataFra
     high_cardinality_cols = df.nunique()[df.nunique() > threshold].index
 
     # Print the dropped columns
-    print(len(high_cardinality_cols), "features/columns dropped due to high cardinality:", high_cardinality_cols.values)
+    print(
+        len(high_cardinality_cols),
+        "features/columns dropped due to high cardinality:",
+        high_cardinality_cols.values,
+    )
 
     # Drop these columns from the dataframe
     return df.drop(high_cardinality_cols, axis=1)
@@ -143,19 +147,79 @@ def remove_high_nan_cols(df: pd.DataFrame, threshold: int) -> pd.DataFrame:
     high_nan_cols = pd.isnull(df).sum()[pd.isnull(df).sum() > threshold].index
 
     print(len(high_nan_cols), "features/columns dropped:", high_nan_cols.values)
-    
+
     return df.drop(high_nan_cols, axis=1)
 
 
-def factorize_df(df: pd.DataFrame) -> None:
-    """Encodes all object features in the DataFrame.
+def factorize_columns(df: pd.DataFrame, columns: list) -> (pd.DataFrame, dict):
+    """
+    Factorize specified columns in a Pandas DataFrame.
 
     Args:
-        df (pd.DataFrame): Pandas DataFrame
+        df (pd.DataFrame): The input DataFrame.
+        columns (list): A list of column names to factorize.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with factorized columns.
+        dict: A dictionary containing mappings of original values to factorized values for each specified column.
     """
 
-    for colname in df.select_dtypes("object"):
-        df[colname], _ = df[colname].factorize()
+    df_copy = df.copy()
+    mappings = {}
+
+    for col in columns:
+        df_copy[col], mapping = pd.factorize(df_copy[col])
+        mappings[col] = mapping
+
+    return df_copy, mappings
+
+
+def reverse_factorize_columns(
+    df: pd.DataFrame, columns: list, mappings: dict
+) -> pd.DataFrame:
+    """
+    Reverse the factorization of specified columns in a Pandas DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame with factorized columns.
+        columns (list): A list of column names to reverse factorize.
+        mappings (dict): A dictionary containing mappings of original values to factorized values for each specified column.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with reversed factorized columns.
+    """
+
+    df_copy = df.copy()
+
+    for col in columns:
+        df_copy[col] = mappings[col].take(df_copy[col])
+
+    return df_copy
+
+
+def standardize_columns(df: pd.DataFrame, columns: list) -> pd.DataFrame:
+    """Standardizes selected columns of the given dataframe to a mean of 0 and SD of 1.
+
+    Args:
+        df (pd.DataFrame): Pandas Dataframe.
+        columns (list): List of column names to standardize.
+
+    Returns:
+        pd.DataFrame: Pandas DataFrame with selected columns standardized.
+    """
+
+    df_copy = df.copy()
+
+    mean = df_copy[columns].mean(axis=0)
+    std = df_copy[columns].std(axis=0)
+
+    # Avoid division by zero
+    epsilon = 1e-8
+    std[std < epsilon] = epsilon
+
+    df_copy[columns] = (df_copy[columns] - mean) / std
+
+    return df_copy
 
 
 def summarize_file(df: pd.DataFrame, file_path: str) -> None:
@@ -218,12 +282,13 @@ def find_nan_columns(df: pd.DataFrame) -> pd.Index:
     return non_zero_nans.index
 
 
-def check_for_normality(df: pd.DataFrame, features: list[str]) -> None:
+def check_for_normality(df: pd.DataFrame, features: list[str], pvalue: float) -> None:
     """Checks for normality in given features, useful in deciding how to impute.
 
     Args:
         df (pd.DataFrame): Pandas DataFrame
         features (list[str]): Features in DataFrame to check
+        pvalue (float): P-Value threshold for normality check
     """
 
     for feature in features:
