@@ -151,9 +151,11 @@ def remove_high_nan_cols(df: pd.DataFrame, threshold: int) -> pd.DataFrame:
     return df.drop(high_nan_cols, axis=1)
 
 
-def factorize_columns(df: pd.DataFrame, columns: list) -> (pd.DataFrame, dict):
+def factorize_columns(
+    df: pd.DataFrame, columns: list
+) -> (pd.DataFrame, list[str], dict):
     """
-    Factorize specified columns in a Pandas DataFrame.
+    Factorize specified categorical columns in a Pandas DataFrame.
 
     Args:
         df (pd.DataFrame): The input DataFrame.
@@ -161,17 +163,22 @@ def factorize_columns(df: pd.DataFrame, columns: list) -> (pd.DataFrame, dict):
 
     Returns:
         pd.DataFrame: A new DataFrame with factorized columns.
+        list: A list of column names that were successfully factorized.
         dict: A dictionary containing mappings of original values to factorized values for each specified column.
     """
 
     df_copy = df.copy()
     mappings = {}
+    factorized_columns = []
 
     for col in columns:
-        df_copy[col], mapping = pd.factorize(df_copy[col])
-        mappings[col] = mapping
+        if df_copy[col].dtype == "object":
+            factorized_columns.append(col)
+            df_copy[col], mapping = pd.factorize(df_copy[col])
+            mappings[col] = mapping
+            print(f"{col} factorized.")
 
-    return df_copy, mappings
+    return df_copy, factorized_columns, mappings
 
 
 def reverse_factorize_columns(
@@ -193,6 +200,7 @@ def reverse_factorize_columns(
 
     for col in columns:
         df_copy[col] = mappings[col].take(df_copy[col])
+        print(f"{col} unfactorized.")
 
     return df_copy
 
