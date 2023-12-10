@@ -47,6 +47,30 @@ def show_spelling_errors(
             print(f"- '{error[0]}' might be similar to '{error[1]}'")
 
 
+def remove_strings_from_columns(
+    df: pd.DataFrame, columns_to_clean: list[str], strings_to_remove: list[str]
+) -> pd.DataFrame:
+    """
+    Removes specified strings from specified columns in a Pandas DataFrame and returns a copy of the DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        columns_to_clean (list[str]): A list of column names to clean.
+        strings_to_remove (list[str]): A list of strings to remove from the specified columns.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with the specified strings removed from the specified columns, leaving the original DataFrame unchanged.
+    """
+
+    df_copy = df.copy()
+
+    for col in columns_to_clean:
+        for string in strings_to_remove:
+            df_copy[col] = df_copy[col].apply(lambda x: re.sub(string, "", x).strip())
+
+    return df_copy
+
+
 def detect_outliers_iqr(data: pd.DataFrame) -> pd.DataFrame:
     """Detects and returns any outliers for a given dataframe.
 
@@ -290,7 +314,9 @@ def find_nan_columns(df: pd.DataFrame) -> pd.Index:
     return non_zero_nans.index
 
 
-def check_for_normality(df: pd.DataFrame, features: list[str], pvalue: float) -> None:
+def check_for_normality(
+    df: pd.DataFrame, features: list[str], pvalue_threshold: float
+) -> None:
     """Checks for normality in given features, useful in deciding how to impute.
 
     Args:
@@ -302,34 +328,50 @@ def check_for_normality(df: pd.DataFrame, features: list[str], pvalue: float) ->
     for feature in features:
         p_value = shapiro(df[feature]).pvalue
 
-        if p_value > 0.05:
-            print(f"{feature} is normally distributed (p-value > 0.05)")
+        if p_value > pvalue_threshold:
+            print(f"{feature} is normally distributed (p-value > {pvalue_threshold})")
         else:
-            print(f"{feature} is not normally distributed (p-value <= 0.05)")
+            print(
+                f"{feature} is not normally distributed (p-value <= {pvalue_threshold})"
+            )
 
 
-def impute_with_mean(df: pd.DataFrame, features_to_impute: list[str]) -> None:
-    """Imputes given features with the mean value.
+def impute_with_mean(df: pd.DataFrame, features_to_impute: list[str]) -> pd.DataFrame:
+    """Imputes given features with the mean value and returns a copy of the DataFrame.
 
     Args:
         df (pd.DataFrame): Pandas DataFrame
         features_to_impute (list[str]): Features to impute with the mean of that feature
+
+    Returns:
+        pd.DataFrame: A new DataFrame with imputed values, leaving the original DataFrame unchanged.
     """
 
+    df_copy = df.copy()
+
     imputer = SimpleImputer(strategy="mean")
-    df[features_to_impute] = imputer.fit_transform(df[features_to_impute])
+    df_copy[features_to_impute] = imputer.fit_transform(df_copy[features_to_impute])
+
+    return df_copy
 
 
-def impute_with_median(df: pd.DataFrame, features_to_impute: list[str]) -> None:
-    """Imputes given features with the median value.
+def impute_with_median(df: pd.DataFrame, features_to_impute: list[str]) -> pd.DataFrame:
+    """Imputes given features with the median value and returns a copy of the DataFrame.
 
     Args:
         df (pd.DataFrame): Pandas DataFrame
         features_to_impute (list[str]): Features to impute with the median of that feature
+
+    Returns:
+        pd.DataFrame: A new DataFrame with imputed values, leaving the original DataFrame unchanged.
     """
 
+    df_copy = df.copy()
+
     imputer = SimpleImputer(strategy="median")
-    df[features_to_impute] = imputer.fit_transform(df[features_to_impute])
+    df_copy[features_to_impute] = imputer.fit_transform(df_copy[features_to_impute])
+
+    return df_copy
 
 
 def read_config_file(filepath: str) -> dict:
@@ -390,23 +432,3 @@ def col_header_val(df: pd.DataFrame, table_config: dict) -> bool:
         mismatched_columns = set(df_columns) ^ set(yaml_columns)
         print(f"Mismatched columns: {list(mismatched_columns)}")
         return False
-
-
-def set_pd_max_columns(max_columns: int | None) -> None:
-    """Changes the number of columns seen on pandas DataFrame output.
-
-    Args:
-        max_columns (int | None): maximum number columns to set
-    """
-
-    pd.set_option("display.max_columns", max_columns)
-
-
-def set_pd_max_rows(max_rows: int | None) -> None:
-    """Changes the number of rows seen on pandas DataFrame output.
-
-    Args:
-        max_rows (int | None): maximum number of rows to set
-    """
-
-    pd.set_option("display.max_rows", max_rows)
