@@ -38,3 +38,20 @@ def get_numerical_cols(df: pd.DataFrame) -> list:
             numerical_columns.append(col)
 
     return numerical_columns
+
+
+def get_discrete_features(df: pd.DataFrame) -> list[bool]:
+    """
+    Determine whether each column in the DataFrame is discrete or continuous.
+
+    Args:
+        dataframe (pd.DataFrame): The input DataFrame.
+
+    Returns:
+        list[bool]: A list of Boolean values, where True indicates a discrete feature,
+            and False indicates a continuous feature.
+    """
+
+    discrete_features = [dtype == 'object' for dtype in df.dtypes]
+
+    return discrete_features

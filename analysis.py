@@ -19,4 +19,4 @@ def object_cols_distribution(
         if col not in exclude_cols:
             category_percentage = (df[col].value_counts() / len(df)) * 100
             print(category_percentage)
-            print("=" * 50)  # Separator for readability
+            print("=" * 50)
