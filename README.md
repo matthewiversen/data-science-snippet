@@ -1,7 +1,7 @@
-#Data Science & Analysis Functions Package
+# Data Science & Analysis Functions Package
 This repository contains a collection of functions frequently used in data cleaning, analysis, modeling, and visualization. It's designed to streamline the process for data scientists and analysts by providing reusable code snippets.
 
-##Features
+## Features
 - Data Cleaning: Functions to clean and preprocess data efficiently.
 - Data Analysis: Tools for performing various data analysis tasks.
 - Modeling: Common modeling functions for predictive analysis.
@@ -15,7 +15,7 @@ pip install your_package_name
 Usage
 from your_package_name import cleaning, analysis, metrics
 
-##Modules
+## Modules
 - analysis.py: Analysis and statistical functions.
 - autos.csv: Sample dataset.
 - cleaning.py: Data cleaning utilities.
@@ -26,5 +26,5 @@ from your_package_name import cleaning, analysis, metrics
 - metrics.py: Metrics calculation for model evaluation.
 - model-specific.py: Functions specific to certain models.
 - validation.py: Data validation scripts.
-##Contributing
+## Contributing
 Contributions are welcome! Feel free to submit pull requests or open issues for improvements and new features.
