@@ -10,11 +10,13 @@ This repository contains a collection of functions frequently used in data clean
 
 Installation
 To install this package, run:
-
-pip install your_package_name
+``python
+pip install your_package_name  
+``
 Usage
+``python
 from your_package_name import cleaning, analysis, metrics
-
+``
 ## Modules
 - analysis.py: Analysis and statistical functions.
 - autos.csv: Sample dataset.
