@@ -9,11 +9,11 @@ This repository contains a collection of functions frequently used in data clean
 - Error Logging: Enhanced logging for error tracking during data processing.
 
 Installation
-To install this package, run:
+To install this package, run:  
 ``python
 pip install your_package_name  
 ``  
-Usage
+Usage  
 ``python
 from your_package_name import cleaning, analysis, metrics
 ``
