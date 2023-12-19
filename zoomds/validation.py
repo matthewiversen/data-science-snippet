@@ -44,6 +44,7 @@ def read_config_file(filepath: str) -> dict:
 def num_col_validation(df: pd.DataFrame, expected_columns: list) -> bool:
     """
     Validates if the number of columns in the DataFrame matches the expected number of columns.
+    Prints the missing or extra columns if there's a discrepancy.
 
     Args:
         df (pd.DataFrame): Pandas DataFrame
@@ -53,7 +54,20 @@ def num_col_validation(df: pd.DataFrame, expected_columns: list) -> bool:
         bool: True if the number of columns in the DataFrame matches the expected number, else False
     """
 
-    return len(df.columns) == len(expected_columns)
+    actual_columns = df.columns.tolist()
+    expected_columns_set = set(expected_columns)
+    actual_columns_set = set(actual_columns)
+
+    if len(actual_columns) == len(expected_columns):
+        return True
+    else:
+        missing_columns = expected_columns_set - actual_columns_set
+        extra_columns = actual_columns_set - expected_columns_set
+        if missing_columns:
+            print(f"Missing columns: {list(missing_columns)}")
+        if extra_columns:
+            print(f"Extra columns: {list(extra_columns)}")
+        return False
 
 
 def col_header_validation(df: pd.DataFrame, expected_columns: list) -> bool:
