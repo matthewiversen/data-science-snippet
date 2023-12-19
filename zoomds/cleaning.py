@@ -26,32 +26,38 @@ def remove_high_cardinality_cols(df: pd.DataFrame, threshold: int) -> pd.DataFra
     return df.drop(high_cardinality_cols, axis=1)
 
 
-def remove_duplicates(df: pd.DataFrame) -> pd.DataFrame:
-    """Prints info about and removes duplicate columns and rows
+def remove_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """Prints info about and removes duplicate rows.
 
     Args:
         df (pd.DataFrame): Incoming Pandas DataFrame
 
     Returns:
-        pd.DataFrame: Pandas DataFrame with no duplicate rows/columns
+        pd.DataFrame: DataFrame with no duplicate rows
     """
-
-    df_copy = df.copy()
-
-    # count and remove duplicate rows
-    duplicate_rows = df_copy[df_copy.duplicated()]
+    duplicate_rows = df[df.duplicated()]
     num_duplicate_rows = len(duplicate_rows)
-    df_copy = df_copy.drop_duplicates()
-
-    # count and remove duplicate columns
-    duplicate_columns = df_copy.columns[df_copy.columns.duplicated()]
-    num_duplicate_columns = len(duplicate_columns)
-    df_copy = df_copy.loc[:, ~df_copy.columns.duplicated()]
+    df = df.drop_duplicates()
 
     print(f"{num_duplicate_rows} rows removed: {duplicate_rows}")
-    print(f"{num_duplicate_columns} columns removed: {duplicate_columns}")
+    return df
 
-    return df_copy
+
+def remove_duplicate_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Prints info about and removes duplicate columns.
+
+    Args:
+        df (pd.DataFrame): Incoming Pandas DataFrame
+
+    Returns:
+        pd.DataFrame: DataFrame with no duplicate columns
+    """
+    duplicate_columns = df.columns[df.columns.duplicated()]
+    num_duplicate_columns = len(duplicate_columns)
+    df = df.loc[:, ~df.columns.duplicated()]
+
+    print(f"{num_duplicate_columns} columns removed: {duplicate_columns}")
+    return df
 
 
 # ! --------------------------String/Object Cleaning---------------------------
