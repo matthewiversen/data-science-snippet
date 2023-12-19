@@ -43,7 +43,7 @@ def remove_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def remove_duplicate_columns(df: pd.DataFrame) -> pd.DataFrame:
+def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
     """Prints info about and removes duplicate columns.
 
     Args:
