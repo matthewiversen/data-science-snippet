@@ -40,7 +40,7 @@ def get_numerical_cols(df: pd.DataFrame) -> list:
     return numerical_columns
 
 
-def get_discrete_features(df: pd.DataFrame) -> list[bool]:
+def get_object_bool_mask(df: pd.DataFrame) -> list[bool]:
     """
     Determine whether each column in the DataFrame is discrete or continuous.
 
