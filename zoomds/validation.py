@@ -59,6 +59,7 @@ def num_col_validation(df: pd.DataFrame, expected_columns: list) -> bool:
     actual_columns_set = set(actual_columns)
 
     if len(actual_columns) == len(expected_columns):
+        print("Number of columns match!")
         return True
     else:
         missing_columns = expected_columns_set - actual_columns_set
@@ -87,6 +88,7 @@ def col_header_validation(df: pd.DataFrame, expected_columns: list) -> bool:
     expected_columns_formatted = sorted([col.strip().lower().replace(" ", "_") for col in expected_columns])
 
     if df_columns == expected_columns_formatted:
+        print("Column headers match!")
         return True
     else:
         # find the mismatched columns

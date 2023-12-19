@@ -35,11 +35,16 @@ def remove_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: DataFrame with no duplicate rows
     """
+
     duplicate_rows = df[df.duplicated()]
     num_duplicate_rows = len(duplicate_rows)
     df = df.drop_duplicates()
 
-    print(f"{num_duplicate_rows} rows removed: {duplicate_rows}")
+    if num_duplicate_rows > 0:
+        print(f"{num_duplicate_rows} rows removed: {duplicate_rows}")
+    else:
+        print("No duplicate rows found.")
+        
     return df
 
 
@@ -52,11 +57,16 @@ def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: DataFrame with no duplicate columns
     """
+
     duplicate_columns = df.columns[df.columns.duplicated()]
     num_duplicate_columns = len(duplicate_columns)
     df = df.loc[:, ~df.columns.duplicated()]
 
-    print(f"{num_duplicate_columns} columns removed: {duplicate_columns}")
+    if num_duplicate_columns > 0:
+        print(f"{num_duplicate_columns} duplicate columns removed: {duplicate_columns.tolist()}")
+    else:
+        print("No duplicate columns found.")
+
     return df
 
 

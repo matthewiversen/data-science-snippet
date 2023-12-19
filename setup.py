@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zoomds',
-    version='0.54',
+    version='0.55',
     author='Matthew Iversen',
     author_email='iversenmatt7@gmail.com',
     description='A collection of data science and analysis functions for data cleaning, analysis, modeling, and visualization.',
