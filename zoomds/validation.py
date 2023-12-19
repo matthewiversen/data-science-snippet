@@ -41,44 +41,41 @@ def read_config_file(filepath: str) -> dict:
             logging.error(exc)
 
 
-def num_col_validation(df: pd.DataFrame, table_config: dict) -> bool:
-    """Validates if the number of columns in the DataFrame matches the table configuration.
+def num_col_validation(df: pd.DataFrame, expected_columns: list) -> bool:
+    """
+    Validates if the number of columns in the DataFrame matches the expected number of columns.
 
     Args:
         df (pd.DataFrame): Pandas DataFrame
-        table_config (dict): Validation data
+        expected_columns (list): List of expected column names
 
     Returns:
-        bool: If number of columns match the validation data
+        bool: True if the number of columns in the DataFrame matches the expected number, else False
     """
 
-    if len(df.columns) == len(table_config["columns"]):
-        return True
-    else:
-        return False
+    return len(df.columns) == len(expected_columns)
 
 
-def col_header_val(df: pd.DataFrame, table_config: dict) -> bool:
-    """Validates if the header names in the DataFrame match the table configuration.
+def col_header_validation(df: pd.DataFrame, expected_columns: list) -> bool:
+    """
+    Validates if the header names in the DataFrame match the expected column names.
+    Column names are compared after sorting, stripping leading/trailing spaces, and replacing spaces with underscores.
 
     Args:
         df (pd.DataFrame): Pandas DataFrame
-        table_config (dict): Validation data
+        expected_columns (list): List of expected column names
 
     Returns:
-        bool: If column headers match the validation data
+        bool: True if column headers match the expected column names, else False
     """
 
-    # sort, strip leading and trailing spaces, and replace space with _
     df_columns = sorted([col.strip().lower().replace(" ", "_") for col in df.columns])
-    yaml_columns = sorted(
-        [col.strip().lower().replace(" ", "_") for col in table_config["columns"]]
-    )
+    expected_columns_formatted = sorted([col.strip().lower().replace(" ", "_") for col in expected_columns])
 
-    if df_columns == yaml_columns:
+    if df_columns == expected_columns_formatted:
         return True
     else:
         # find the mismatched columns
-        mismatched_columns = set(df_columns) ^ set(yaml_columns)
+        mismatched_columns = set(df_columns) ^ set(expected_columns_formatted)
         print(f"Mismatched columns: {list(mismatched_columns)}")
         return False
