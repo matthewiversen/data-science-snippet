@@ -5,6 +5,7 @@ from sklearn.decomposition import PCA
 
 # ! ----------------------Principal Component Analysis-------------------------
 
+
 def plot_variance(pca: PCA, width: int = 8, dpi: int = 100) -> np.ndarray:
     """
     Create a pair of subplots to visualize explained variance and cumulative variance
@@ -27,15 +28,11 @@ def plot_variance(pca: PCA, width: int = 8, dpi: int = 100) -> np.ndarray:
     # Explained variance
     evr = pca.explained_variance_ratio_
     axs[0].bar(grid, evr)
-    axs[0].set(
-        xlabel="Component", title="% Explained Variance", ylim=(0.0, 1.0)
-    )
+    axs[0].set(xlabel="Component", title="% Explained Variance", ylim=(0.0, 1.0))
     # Cumulative Variance
     cv = np.cumsum(evr)
     axs[1].plot(np.r_[0, grid], np.r_[0, cv], "o-")
-    axs[1].set(
-        xlabel="Component", title="% Cumulative Variance", ylim=(0.0, 1.0)
-    )
+    axs[1].set(xlabel="Component", title="% Cumulative Variance", ylim=(0.0, 1.0))
 
     fig.set_figwidth(width)
     fig.set_dpi(dpi)

@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def object_cols_distribution(
     df: pd.DataFrame, object_cols: list[str], exclude_cols: list[str] = []
 ) -> None:
@@ -14,7 +15,7 @@ def object_cols_distribution(
     Returns:
         None
     """
-    
+
     for col in object_cols:
         if col not in exclude_cols:
             category_percentage = (df[col].value_counts() / len(df)) * 100

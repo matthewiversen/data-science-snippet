@@ -2,6 +2,7 @@ import pandas as pd
 from scipy.stats import shapiro  # normality test
 from sklearn.impute import SimpleImputer  # used for mean/median/mode imputing
 
+
 def detect_outliers_iqr(data: pd.DataFrame) -> pd.DataFrame:
     """Detects and returns any outliers for a given dataframe.
 
@@ -46,7 +47,9 @@ def check_for_normality(
             )
 
 
-def impute_features(df: pd.DataFrame, features_to_impute: list[str], strat: str) -> pd.DataFrame:
+def impute_features(
+    df: pd.DataFrame, features_to_impute: list[str], strat: str
+) -> pd.DataFrame:
     """Imputes given features with the median value and returns a copy of the DataFrame.
 
     Args:

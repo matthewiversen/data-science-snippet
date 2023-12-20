@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import os
 
+
 def summarize_file(df: pd.DataFrame, file_path: str) -> None:
     """Prints a summary of a data file including total rows, columns, and file size in MB.
 
@@ -85,7 +86,9 @@ def col_header_validation(df: pd.DataFrame, expected_columns: list) -> bool:
     """
 
     df_columns = sorted([col.strip().lower().replace(" ", "_") for col in df.columns])
-    expected_columns_formatted = sorted([col.strip().lower().replace(" ", "_") for col in expected_columns])
+    expected_columns_formatted = sorted(
+        [col.strip().lower().replace(" ", "_") for col in expected_columns]
+    )
 
     if df_columns == expected_columns_formatted:
         print("Column headers match!")

@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def get_object_cols(df: pd.DataFrame) -> list:
     """
     Get a list of column names that have 'object' or categorical data type in a DataFrame.
@@ -10,11 +11,11 @@ def get_object_cols(df: pd.DataFrame) -> list:
     Returns:
         list: A list of column names containing 'object' or categorical data type.
     """
-    
+
     object_columns = []
 
     for col in df.columns:
-        if df[col].dtype == 'object' or pd.api.types.is_categorical_dtype(df[col]):
+        if df[col].dtype == "object" or pd.api.types.is_categorical_dtype(df[col]):
             object_columns.append(col)
 
     return object_columns
@@ -52,6 +53,6 @@ def get_object_bool_mask(df: pd.DataFrame) -> list[bool]:
             and False indicates a continuous feature.
     """
 
-    discrete_features = [dtype == 'object' for dtype in df.dtypes]
+    discrete_features = [dtype == "object" for dtype in df.dtypes]
 
     return discrete_features

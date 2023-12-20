@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
+
 def min_max_scale_columns(df: pd.DataFrame, columns: list) -> (pd.DataFrame, dict):
     """
     Min-Max scale specified columns in a Pandas DataFrame using sklearn's MinMaxScaler.
@@ -28,7 +29,9 @@ def min_max_scale_columns(df: pd.DataFrame, columns: list) -> (pd.DataFrame, dic
     return df_copy, scalers
 
 
-def reverse_min_max_scale_columns(df: pd.DataFrame, columns: list, scalers: dict) -> pd.DataFrame:
+def reverse_min_max_scale_columns(
+    df: pd.DataFrame, columns: list, scalers: dict
+) -> pd.DataFrame:
     """
     Reverse the Min-Max scaling of specified columns in a Pandas DataFrame using sklearn's MinMaxScaler.
 

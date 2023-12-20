@@ -1,10 +1,16 @@
 import pandas as pd
 from sklearn.feature_selection import mutual_info_regression
 
-def print_mi_scores(features: pd.DataFrame, target: pd.DataFrame, object_cols: list[bool], n_scores: int = None):
+
+def print_mi_scores(
+    features: pd.DataFrame,
+    target: pd.DataFrame,
+    object_cols: list[bool],
+    n_scores: int = None,
+):
     """Calculate and print Mutual Information (MI) Scores for feature selection.
 
-    This function calculates MI scores between each feature in 'features' and the 'target', 
+    This function calculates MI scores between each feature in 'features' and the 'target',
     then prints the top 'n_scores' MI scores. If 'n_scores' is not specified, all scores are printed.
 
     Args:
@@ -16,7 +22,7 @@ def print_mi_scores(features: pd.DataFrame, target: pd.DataFrame, object_cols: l
     Returns:
         None
     """
-    
+
     mi_scores = mutual_info_regression(features, target, discrete_features=object_cols)
     mi_scores = pd.Series(mi_scores, name="MI Scores", index=features.columns)
     mi_scores = mi_scores.sort_values(ascending=False)
@@ -27,11 +33,16 @@ def print_mi_scores(features: pd.DataFrame, target: pd.DataFrame, object_cols: l
         print(mi_scores)
 
 
-def get_mi_scores(features: pd.DataFrame, target: pd.DataFrame, object_cols: list[bool], n_scores: int = None) -> pd.Series:
+def get_mi_scores(
+    features: pd.DataFrame,
+    target: pd.DataFrame,
+    object_cols: list[bool],
+    n_scores: int = None,
+) -> pd.Series:
     """Calculate and return top Mutual Information (MI) Scores for feature selection.
 
     This function calculates MI scores between each feature in 'features' and the 'target',
-    then returns a Pandas Series of the top 'n_scores' MI scores. 
+    then returns a Pandas Series of the top 'n_scores' MI scores.
     If 'n_scores' is not specified, or if it exceeds the number of features, all scores are returned.
 
     Args:
@@ -43,7 +54,7 @@ def get_mi_scores(features: pd.DataFrame, target: pd.DataFrame, object_cols: lis
     Returns:
         pd.Series: Series containing the top n MI Scores for each feature, sorted in descending order.
     """
-    
+
     mi_scores = mutual_info_regression(features, target, discrete_features=object_cols)
     mi_scores = pd.Series(mi_scores, name="MI Scores", index=features.columns)
     sorted_mi_scores = mi_scores.sort_values(ascending=False)

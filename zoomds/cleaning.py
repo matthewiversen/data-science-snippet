@@ -2,7 +2,9 @@ import pandas as pd
 import difflib  # used to compare strings
 import re  # regular expressions
 
+
 # ! --------------------------Column and Row Cleaning--------------------------
+
 
 def remove_high_cardinality_cols(df: pd.DataFrame, threshold: int) -> pd.DataFrame:
     """Remove columns with a cardinality higher than the given threshold.
@@ -44,7 +46,7 @@ def remove_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
         print(f"{num_duplicate_rows} rows removed: {duplicate_rows}")
     else:
         print("No duplicate rows found.")
-        
+
     return df
 
 
@@ -63,7 +65,9 @@ def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
     df = df.loc[:, ~df.columns.duplicated()]
 
     if num_duplicate_columns > 0:
-        print(f"{num_duplicate_columns} duplicate columns removed: {duplicate_columns.tolist()}")
+        print(
+            f"{num_duplicate_columns} duplicate columns removed: {duplicate_columns.tolist()}"
+        )
     else:
         print("No duplicate columns found.")
 
@@ -71,6 +75,7 @@ def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ! --------------------------String/Object Cleaning---------------------------
+
 
 def show_spelling_errors(
     df: pd.DataFrame, similarity_threshold: float, exclude_columns: list[str] = []
@@ -151,6 +156,7 @@ def alpha_numeric_text_clean(text: str) -> str:
 
 
 # ! -------------------------------NaN Cleaning--------------------------------
+
 
 def remove_high_nan_cols(df: pd.DataFrame, threshold: int) -> pd.DataFrame:
     """Remove columns with a NaN count higher than the given threshold.
