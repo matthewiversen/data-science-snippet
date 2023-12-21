@@ -193,7 +193,11 @@ def print_nan_cols(df: pd.DataFrame) -> None:
 
     nan_counts = df.isnull().sum().sort_values(ascending=False)
     nan_counts = nan_counts[nan_counts > 0]
-    print(f"NaN Counts:\n{nan_counts}")
+
+    if nan_counts.empty:
+        print("No NaNs found.")
+    else:
+        print(f"NaN Counts:\n{nan_counts}")
 
 
 def find_nan_columns(df: pd.DataFrame) -> pd.Index:

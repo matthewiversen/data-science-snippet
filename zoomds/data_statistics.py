@@ -3,26 +3,34 @@ from scipy.stats import shapiro  # normality test
 from sklearn.impute import SimpleImputer  # used for mean/median/mode imputing
 
 
-def detect_outliers_iqr(data: pd.DataFrame) -> pd.DataFrame:
-    """Detects and returns any outliers for a given dataframe.
+def detect_outliers_iqr_columns(data: pd.DataFrame, columns: list) -> dict:
+    """Detects and returns outliers for specified columns in a DataFrame.
 
     Args:
-        data (pd.DataFrame): Pandas DataFrame
+        data (pd.DataFrame): Pandas DataFrame.
+        columns (list): List of column names to detect outliers.
 
     Returns:
-        pd.DataFrame: Pandas DataFrame with outliers only
+        dict: A dictionary where each key is a column name and its value is a DataFrame of outliers and their indices for that column.
     """
 
-    Q1 = data.quantile(0.25)
-    Q3 = data.quantile(0.75)
-    IQR = Q3 - Q1
-    lower_bound = Q1 - 1.5 * IQR
-    upper_bound = Q3 + 1.5 * IQR
+    outliers_dict = {}
 
-    # filter for outliers
-    outliers = data[(data < lower_bound) | (data > upper_bound)]
+    for col in columns:
+        if col in data.columns:
+            Q1 = data[col].quantile(0.25)
+            Q3 = data[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
 
-    return outliers
+            outlier_condition = (data[col] < lower_bound) | (data[col] > upper_bound)
+            outliers = data[col][outlier_condition]
+            outliers_dict[col] = pd.DataFrame(
+                {"Index": outliers.index, "Outlier": outliers.values}
+            )
+
+    return outliers_dict
 
 
 def check_for_normality(
