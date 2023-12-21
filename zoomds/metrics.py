@@ -5,7 +5,7 @@ from sklearn.feature_selection import mutual_info_regression
 def print_mi_scores(
     features: pd.DataFrame,
     target: pd.DataFrame,
-    object_cols: list[bool],
+    object_cols_mask: list[bool],
     n_scores: int = None,
 ):
     """Calculate and print Mutual Information (MI) Scores for feature selection.
@@ -23,7 +23,9 @@ def print_mi_scores(
         None
     """
 
-    mi_scores = mutual_info_regression(features, target, discrete_features=object_cols)
+    mi_scores = mutual_info_regression(
+        features, target, discrete_features=object_cols_mask, random_state=42
+    )
     mi_scores = pd.Series(mi_scores, name="MI Scores", index=features.columns)
     mi_scores = mi_scores.sort_values(ascending=False)
 

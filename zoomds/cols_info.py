@@ -15,7 +15,7 @@ def get_object_cols(df: pd.DataFrame) -> list:
     object_columns = []
 
     for col in df.columns:
-        if df[col].dtype == "object" or pd.api.types.is_categorical_dtype(df[col]):
+        if df[col].dtype == "object" or isinstance(df[col].dtype, pd.CategoricalDtype):
             object_columns.append(col)
 
     return object_columns
