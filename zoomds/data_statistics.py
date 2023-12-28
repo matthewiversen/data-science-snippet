@@ -3,7 +3,7 @@ from scipy.stats import shapiro  # normality test
 from sklearn.impute import SimpleImputer  # used for mean/median/mode imputing
 
 
-def detect_outliers_iqr_columns(data: pd.DataFrame, columns: list) -> dict:
+def detect_outliers_iqr(data: pd.DataFrame, columns: list) -> dict:
     """Detects and returns outliers for specified columns in a DataFrame.
 
     Args:

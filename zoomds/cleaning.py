@@ -77,7 +77,7 @@ def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
 # ! --------------------------String/Object Cleaning---------------------------
 
 
-def show_spelling_errors(
+def row_potential_typos(
     df: pd.DataFrame, similarity_threshold: float, exclude_columns: list[str] = []
 ) -> None:
     """This prints all of the observations in a column that are similar above a threshold
@@ -88,12 +88,13 @@ def show_spelling_errors(
         exclude_columns (list[str]): List of columns you want to exclude from spelling check
     """
 
+    df_copy = df.copy()
     spelling_errors = {}
 
     # find potential spelling errors for object columns
     for column in df.select_dtypes(include="object"):
         if column not in exclude_columns:
-            unique_values = df[column].dropna().unique()
+            unique_values = df_copy[column].dropna().unique()
             potential_errors = []
 
             for i, value1 in enumerate(unique_values):
@@ -105,11 +106,14 @@ def show_spelling_errors(
             if potential_errors:
                 spelling_errors[column] = potential_errors
 
-    # print the errors
-    for column, errors in spelling_errors.items():
-        print(f"Potential spelling errors in column '{column}':")
-        for error in errors:
-            print(f"- '{error[0]}' might be similar to '{error[1]}'")
+    # print the errors if any are found
+    if not spelling_errors:
+        print("No potential spelling errors found.")
+    else:
+        for column, errors in spelling_errors.items():
+            print(f"Potential spelling errors in column '{column}':")
+            for error in errors:
+                print(f"- '{error[0]}' might be similar to '{error[1]}'")
 
 
 def remove_strings_from_cols(
