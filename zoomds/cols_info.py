@@ -1,44 +1,23 @@
 import pandas as pd
 
 
-def get_object_cols(df: pd.DataFrame) -> list:
+def get_cat_num_cols(df: pd.DataFrame) -> (list[str], list[str]):
     """
-    Get a list of column names that have 'object' or categorical data type in a DataFrame.
+    Get lists of column names for categorical and numerical data types in a DataFrame.
 
     Args:
         df (pd.DataFrame): The DataFrame to analyze.
 
     Returns:
-        list: A list of column names containing 'object' or categorical data type.
+        tuple:
+            - First list contains names of categorical columns ('object', 'category' data types).
+            - Second list contains names of numerical columns ('int64', 'float64', 'uint8' data types).
     """
 
-    object_columns = []
+    categorical_cols = df.select_dtypes(include=["object", "category"]).columns
+    numerical_cols = df.select_dtypes(include=["int64", "float64", "uint8"]).columns
 
-    for col in df.columns:
-        if df[col].dtype == "object" or isinstance(df[col].dtype, pd.CategoricalDtype):
-            object_columns.append(col)
-
-    return object_columns
-
-
-def get_numerical_cols(df: pd.DataFrame) -> list:
-    """
-    Get a list of column names that have numerical data type in a DataFrame.
-
-    Args:
-        df (pd.DataFrame): The DataFrame to analyze.
-
-    Returns:
-        list: A list of column names containing numerical data type.
-    """
-
-    numerical_columns = []
-
-    for col in df.columns:
-        if pd.api.types.is_numeric_dtype(df[col]):
-            numerical_columns.append(col)
-
-    return numerical_columns
+    return categorical_cols, numerical_cols
 
 
 def get_object_bool_mask(df: pd.DataFrame) -> list[bool]:
