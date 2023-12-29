@@ -7,24 +7,32 @@ def print_mi_scores(
     target: pd.DataFrame,
     object_cols_mask: list[bool],
     n_scores: int = None,
+    ignore_cols: list[str] = None,
 ):
-    """Calculate and print Mutual Information (MI) Scores for feature selection.
-
-    This function calculates MI scores between each feature in 'features' and the 'target',
-    then prints the top 'n_scores' MI scores. If 'n_scores' is not specified, all scores are printed.
+    """
+    Calculate and print Mutual Information (MI) Scores for feature selection, excluding specified columns.
 
     Args:
         features (pd.DataFrame): DataFrame containing the features.
         target (pd.DataFrame): DataFrame containing the target variable.
-        object_cols (list[bool]): List indicating if each feature is discrete (True) or continuous (False).
+        object_cols_mask (list[bool]): List indicating if each feature is discrete (True) or continuous (False).
         n_scores (int, optional): Number of top scores to print. Defaults to printing all scores.
+        ignore_cols (list[str], optional): List of column names to ignore in the calculation.
 
     Returns:
         None
     """
 
+    if ignore_cols is not None:
+        features = features.drop(columns=ignore_cols, errors="ignore")
+        object_cols_mask = [
+            col
+            for col, mask in zip(features.columns, object_cols_mask)
+            if col not in ignore_cols
+        ]
+
     mi_scores = mutual_info_regression(
-        features, target, discrete_features=object_cols_mask, random_state=42
+        features, target.squeeze(), discrete_features=object_cols_mask, random_state=42
     )
     mi_scores = pd.Series(mi_scores, name="MI Scores", index=features.columns)
     mi_scores = mi_scores.sort_values(ascending=False)
@@ -38,27 +46,35 @@ def print_mi_scores(
 def get_mi_scores(
     features: pd.DataFrame,
     target: pd.DataFrame,
-    object_cols: list[bool],
+    object_cols_mask: list[bool],
     n_scores: int = None,
+    ignore_cols: list[str] = None,
 ) -> pd.Series:
-    """Calculate and return top Mutual Information (MI) Scores for feature selection.
-
-    This function calculates MI scores between each feature in 'features' and the 'target',
-    then returns a Pandas Series of the top 'n_scores' MI scores.
-    If 'n_scores' is not specified, or if it exceeds the number of features, all scores are returned.
+    """
+    Calculate and return top Mutual Information (MI) Scores for feature selection, excluding specified columns.
 
     Args:
         features (pd.DataFrame): DataFrame containing the features.
         target (pd.DataFrame): DataFrame containing the target variable.
-        object_cols (list[bool]): List indicating if each feature is discrete (True) or continuous (False).
+        object_cols_mask (list[bool]): List indicating if each feature is discrete (True) or continuous (False).
         n_scores (int, optional): Number of top scores to return. If not specified, returns all scores.
+        ignore_cols (list[str], optional): List of column names to ignore in the calculation.
 
     Returns:
         pd.Series: Series containing the top n MI Scores for each feature, sorted in descending order.
     """
 
+    # Exclude ignored columns if provided
+    if ignore_cols is not None:
+        features = features.drop(columns=ignore_cols, errors="ignore")
+        object_cols_mask = [
+            mask
+            for col, mask in zip(features.columns, object_cols_mask)
+            if col not in ignore_cols
+        ]
+
     mi_scores = mutual_info_regression(
-        features, target, discrete_features=object_cols, random_state=42
+        features, target.squeeze(), discrete_features=object_cols_mask, random_state=42
     )
     mi_scores = pd.Series(mi_scores, name="MI Scores", index=features.columns)
     sorted_mi_scores = mi_scores.sort_values(ascending=False)
