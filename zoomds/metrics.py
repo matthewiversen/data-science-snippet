@@ -57,7 +57,9 @@ def get_mi_scores(
         pd.Series: Series containing the top n MI Scores for each feature, sorted in descending order.
     """
 
-    mi_scores = mutual_info_regression(features, target, discrete_features=object_cols)
+    mi_scores = mutual_info_regression(
+        features, target, discrete_features=object_cols, random_state=42
+    )
     mi_scores = pd.Series(mi_scores, name="MI Scores", index=features.columns)
     sorted_mi_scores = mi_scores.sort_values(ascending=False)
 
