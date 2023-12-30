@@ -29,7 +29,7 @@ def remove_high_cardinality_cols(df: pd.DataFrame, threshold: int) -> pd.DataFra
 
 
 def remove_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
-    """Prints info about and removes duplicate rows.
+    """Removes the duplicate rows and prints the removed rows, if any.
 
     Args:
         df (pd.DataFrame): Incoming Pandas DataFrame
@@ -51,7 +51,7 @@ def remove_duplicate_rows(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
-    """Prints info about and removes duplicate columns.
+    """Removes the duplicate columns and prints the removed columns, if any.
 
     Args:
         df (pd.DataFrame): Incoming Pandas DataFrame
@@ -80,12 +80,20 @@ def remove_duplicate_cols(df: pd.DataFrame) -> pd.DataFrame:
 def row_potential_typos(
     df: pd.DataFrame, similarity_threshold: float, exclude_columns: list[str] = []
 ) -> None:
-    """This prints all of the observations in a column that are similar above a threshold
+    """
+    Prints potential typos in object columns of a DataFrame by comparing string similarity.
+
+    This function identifies pairs of string values within each object-type column that 
+    have a similarity ratio above the specified threshold, indicating potential typos.
+    Only columns with string data types are analyzed, and any specified columns are excluded.
 
     Args:
-        df (pd.DataFrame): Pandas DataFrame
-        similarity_threshold (float): Decimal of how similar of results we want to see (0.0-1.0)
-        exclude_columns (list[str]): List of columns you want to exclude from spelling check
+        df (pd.DataFrame): The DataFrame to be analyzed.
+        similarity_threshold (float): Threshold for similarity ratio (0.0-1.0).
+        exclude_columns (list[str], optional): Columns to exclude from the analysis.
+
+    Returns:
+        None
     """
 
     df_copy = df.copy()
