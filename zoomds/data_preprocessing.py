@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 
 def min_max_scale_columns(df: pd.DataFrame, columns: list) -> (pd.DataFrame, dict):
@@ -110,26 +111,36 @@ def reverse_factorize_columns(
     return df_copy
 
 
-def standardize_columns(df: pd.DataFrame, columns: list) -> pd.DataFrame:
-    """Standardizes selected columns of the given dataframe to a mean of 0 and SD of 1.
+def normalize_data(df: pd.DataFrame) -> (pd.DataFrame, StandardScaler):
+    """
+    Normalizes the data in the given DataFrame.
 
     Args:
-        df (pd.DataFrame): Pandas Dataframe.
-        columns (list): List of column names to standardize.
+        df (pd.DataFrame): DataFrame to normalize.
 
     Returns:
-        pd.DataFrame: Pandas DataFrame with selected columns standardized.
+        pd.DataFrame: Normalized DataFrame.
+        StandardScaler: Scaler object used for normalization (to be used for un-normalization).
     """
 
-    df_copy = df.copy()
+    scaler = StandardScaler()
+    df_normalized = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
 
-    mean = df_copy[columns].mean(axis=0)
-    std = df_copy[columns].std(axis=0)
+    return df_normalized, scaler
 
-    # Avoid division by zero
-    epsilon = 1e-8
-    std[std < epsilon] = epsilon
 
-    df_copy[columns] = (df_copy[columns] - mean) / std
+def unnormalize_data(df: pd.DataFrame, scaler: StandardScaler) -> pd.DataFrame:
+    """
+    Reverses the normalization of the data.
 
-    return df_copy
+    Args:
+        df_normalized (pd.DataFrame): Normalized DataFrame to un-normalize.
+        scaler (StandardScaler): Scaler object used for the initial normalization.
+
+    Returns:
+        pd.DataFrame: Un-normalized DataFrame.
+    """
+
+    df_unnormalized = pd.DataFrame(scaler.inverse_transform(df), columns=df.columns)
+
+    return df_unnormalized

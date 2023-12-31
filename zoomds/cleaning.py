@@ -83,7 +83,7 @@ def row_potential_typos(
     """
     Prints potential typos in object columns of a DataFrame by comparing string similarity.
 
-    This function identifies pairs of string values within each object-type column that 
+    This function identifies pairs of string values within each object-type column that
     have a similarity ratio above the specified threshold, indicating potential typos.
     Only columns with string data types are analyzed, and any specified columns are excluded.
 
